@@ -39,3 +39,33 @@ void VkApp::queryPhysicalDeviceProperties(const int physicalDeviceIndex)
     std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
 }
+
+VkResult VkApp::createLogicDevice(const int physicalDeviceIndex)
+{
+    if (physicalDeviceIndex < 0 || physicalDeviceIndex >= physicalDevices_.size())
+        return;
+
+    const VkPhysicalDevice physicalDevice = physicalDevices_[physicalDeviceIndex];
+
+    // set features
+    VkPhysicalDeviceFeatures supportedFeatures;
+    vkGetPhysicalDeviceFeatures(physicalDevice, &supportedFeatures);
+    VkPhysicalDeviceFeatures requiredFeatures = {};
+    requiredFeatures.multiDrawIndirect = supportedFeatures.multiDrawIndirect;
+    requiredFeatures.tessellationShader = VK_TRUE;
+    requiredFeatures.geometryShader = VK_TRUE;
+
+    // set create info
+    VkDeviceQueueCreateInfo deviceQueueCreateInfo = {};
+    deviceQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    deviceQueueCreateInfo.queueCount = 1;
+    VkDeviceCreateInfo deviceCreateInfo = {};
+    deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    deviceCreateInfo.queueCreateInfoCount = 1;
+    deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfo;
+    deviceCreateInfo.pEnabledFeatures = &requiredFeatures;
+
+    VkDevice device;
+    const VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
+    return result;
+}
