@@ -18,9 +18,15 @@
     <ClInclude Include="VkApp.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="VkAllocator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VkApp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="VkAllocator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
